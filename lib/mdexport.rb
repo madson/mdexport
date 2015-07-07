@@ -47,15 +47,46 @@ class Mdexport
       FileWatcher.new(pattern).watch do |filename|
         puts "File " + filename + " was changed."
         self.process filename
+        
+        basename = self.basename filename
+        self.refresh_page basename
       end
     end
     
   end
   
+  def self.refresh_page keyword
+    puts "Refreshing page with keyword: #{keyword}"
+    
+    %x{osascript<<ENDGAME
+            	tell application "Safari"
+              	set windowList to every window
+              	repeat with aWindow in windowList
+              		set tabList to every tab of aWindow
+              		repeat with atab in tabList
+              			if (URL of atab contains "#{keyword}") then
+              			  tell atab to do javascript "window.location.reload()"
+              			end if
+              		end repeat
+              	end repeat
+            	end tell
+    ENDGAME
+    }
+  end
+  
+  def self.extension file
+    File.extname file
+  end
+  
+  def self.basename file
+    extension = self.extension file
+    File.basename(file, extension)
+  end
+  
   def self.process( file )
 
-  extension = File.extname(file)
-  basename = File.basename(file, extension)
+  extension = self.extension file
+  basename = self.basename file
   content = File.read file
   html_body = GitHub::Markdown.render_gfm content
   html_title = basename
