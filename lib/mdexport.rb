@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'fileutils'
 require 'filewatcher'
 require 'string'
+require 'file'
 require 'markdown'
 require 'mustache'
 
@@ -46,19 +46,19 @@ class Mdexport
     files.each do |file_path|
       if cleaning
         html_file = file_path.html_file_path
-        self.remove_file(html_file)
+        File.remove(html_file)
       else
-        self.generate_html_for(file_path)
+        self.generate_html(file_path)
       end
     end
 
     if watching
       FileWatcher.new(pattern).watch do |file_path, event|
         if [:changed, :new].include? event
-          self.generate_html_for(file_path)
+          self.generate_html(file_path)
           self.refresh_page(file_path.basename)
         elsif event.to_sym == :delete
-          self.remove_file(file_path.html_file_path)
+          File.remove(file_path.html_file_path)
         end
       end
     end
@@ -80,12 +80,8 @@ class Mdexport
 ENDGAME
 }
   end
-  
-  def self.remove_file(file_path)
-    FileUtils.rm(file_path) if File.exist?(file_path)
-  end
-  
-  def self.generate_html_for(file_path)
+    
+  def self.generate_html(file_path)
     file_content = File.read(file_path)
     html_body = Markdown.render(file_content)
 
@@ -99,7 +95,7 @@ ENDGAME
     content = Mustache.render(template, :title => title, :yield => html_body)
 
     html_file_path = file_path.html_file_path
-    self.remove_file(html_file_path)
+    File.remove(html_file_path)
     File.write(html_file_path, content)
   end
 
