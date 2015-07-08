@@ -46,16 +46,20 @@ class Mdexport
     files.each do |file_path|
       if cleaning
         html_file = file_path.html_file_path
-        FileUtils.rm(html_file) if File.exist?(html_file)
+        self.remove_file(html_file)
       else
         self.generate_html_for(file_path)
       end
     end
 
     if watching
-      FileWatcher.new(pattern).watch do |file_path|
-        self.generate_html_for(file_path)
-        self.refresh_page(file_path.basename)
+      FileWatcher.new(pattern).watch do |file_path, event|
+        if [:changed, :new].include? event
+          self.generate_html_for(file_path)
+          self.refresh_page(file_path.basename)
+        elsif event.to_sym == :delete
+          self.remove_file(file_path.html_file_path)
+        end
       end
     end
   end
@@ -77,16 +81,20 @@ ENDGAME
 }
   end
   
+  def self.remove_file(file_path)
+    FileUtils.rm(file_path) if File.exist?(file_path)
+  end
+  
   def self.generate_html_for(file_path)
     file_content = File.read(file_path)
     html_body = Markdown.render(file_content)
-    
+
     title = file_path.basename
     template = File.read("lib/templates/page.mustache")
     content = Mustache.render(template, :title => title, :yield => html_body)
 
     html_file_path = file_path.html_file_path
-    FileUtils.rm(html_file_path) if File.exist?(html_file_path)
+    self.remove_file(html_file_path)
     File.write(html_file_path, content)
   end
 
