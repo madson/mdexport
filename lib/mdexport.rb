@@ -89,7 +89,12 @@ ENDGAME
     file_content = File.read(file_path)
     html_body = Markdown.render(file_content)
 
-    title = file_path.basename
+    if html_body =~ /<[hH][1-6].*?>(\w.*?)<\/.*?[hH][1-6]>/
+      title = Regexp.last_match[1]
+    else
+      title = file_path.basename
+    end
+    
     template = File.read("lib/templates/page.mustache")
     content = Mustache.render(template, :title => title, :yield => html_body)
 
