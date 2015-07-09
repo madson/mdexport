@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency 'filewatcher', '~> 0.5.1'
   s.add_dependency 'github-markdown', '~> 0.6.8'
-  s.add_dependency 'commander', '~> 4.3.4'
+  s.add_runtime_dependency 'commander', '~> 4.3', '>= 4.3.4'
   s.add_runtime_dependency 'mustache', '~> 1.0', '>= 1.0.2'
   s.add_development_dependency 'rspec', '~> 3.3', '>= 3.3.0'
 end
