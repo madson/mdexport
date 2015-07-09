@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'filewatcher'
 require 'string'
 require 'file'
@@ -7,13 +5,15 @@ require 'markdown'
 require 'mustache'
 require 'commander'
 require 'rubygems'
+require 'version'
 
-class Mdexport
+module Mdexport
+class Export
   include Commander::Methods
   
   def run
     program :name, 'mdexport'
-    program :version, '0.0.5'
+    program :version, Mdexport::VERSION
     program :description, 'mdexport is a command line that exports markdown files into html files.'
     
     default_command :run
@@ -142,3 +142,4 @@ class Mdexport
   end
 
 end # end class
+end

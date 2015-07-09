@@ -1,12 +1,16 @@
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
+
+require 'version'
+
 Gem::Specification.new do |s|
   s.name        = 'mdexport'
-  s.version     = '0.0.7'
+  s.version     = Mdexport::VERSION
   s.date        = '2015-07-06'
   s.summary     = "mdexport is a gem that exports markdown files into html files."
   s.description = "A simple gem that exports all markdown files from current folder to html files."
   s.authors     = ["Madson Cardoso"]
   s.email       = 'madsonmac@gmail.com'
-  s.files       = Dir["lib/*"]
+  s.files       = Dir["lib/**/*"]
   s.homepage    = 'http://github.com/madson/mdexport'
   s.license     = 'MIT'
   s.executables << 'mdexport'
