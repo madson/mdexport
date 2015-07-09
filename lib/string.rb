@@ -13,7 +13,7 @@ class String
     File.basename(self, extension)
   end
   
-  def html_file_path
+  def html
     dirname = Pathname.new(self).dirname
     filename = self.filename.gsub(extension, '.html')
     "#{dirname}/#{filename}"

@@ -21,7 +21,7 @@ describe String do
   
   it 'should have a html file path' do
     dirname = Pathname.new(@filename).dirname
-    expect(@filename.html_file_path).to eq("#{dirname}/string_spec.html")
+    expect(@filename.html).to eq("#{dirname}/string_spec.html")
   end
   
 end
